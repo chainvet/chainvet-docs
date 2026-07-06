@@ -56,7 +56,18 @@ If the binary lives elsewhere, point `chainvet.serverPath` at it. Prebuilt
 
 The [AI features](/docs/concepts/ai-features) are **off by default** — with them off,
 Chainvet runs fully offline and deterministically. The extension passes these
-settings to the language server as environment variables.
+settings to the language server as the standard `CHAINVET_LLM_*` environment
+variables:
+
+| Setting | Environment variable |
+| --- | --- |
+| `chainvet.aiReports.enabled` | `CHAINVET_LLM_REPORT` |
+| `chainvet.aiFallbackParser.enabled` | `CHAINVET_LLM_FALLBACK_PARSER` |
+| `chainvet.ai.endpoint` | `CHAINVET_LLM_ENDPOINT` |
+| `chainvet.ai.model` | `CHAINVET_LLM_MODEL` |
+
+So a scan behaves identically whether you run it from the editor, the
+[CLI](/docs/cli/overview), or the [language server](/docs/frontends/lsp) directly.
 
 ## How it works
 
