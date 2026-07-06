@@ -5,7 +5,7 @@ icon: Server
 ---
 
 `chainvet-server` is an [axum](https://github.com/tokio-rs/axum) REST front end. It
-exposes scanning over HTTP and powers the [Web UI](/docs/integrations/web-ui).
+exposes scanning over HTTP and powers the [Web UI](/integrations/web-ui).
 
 ## Run it
 
@@ -19,7 +19,7 @@ CHAINVET_SERVER_ROOT=./contracts chainvet-server   # listens on 127.0.0.1:8080
 | `CHAINVET_SERVER_ADDR` | `127.0.0.1:8080` | The listen address. |
 
 <Callout title="Prefer the launcher">
-  The [Web UI](/docs/integrations/web-ui) ships a `serve.py` launcher that starts
+  The [Web UI](/integrations/web-ui) ships a `serve.py` launcher that starts
   this server, serves the UI, waits until it's healthy, and opens your browser — one
   command instead of wiring the two together by hand.
 </Callout>
@@ -50,6 +50,6 @@ without re-scanning.
 ## Report generation
 
 `GET /api/report?format=md|html|pdf` returns the same Cyfrin-style
-[audit report](/docs/cli/audit-reports) the CLI produces (the two front ends share
+[audit report](/cli/audit-reports) the CLI produces (the two front ends share
 the `chainvet-report` crate). PDF rendering requires an HTML→PDF engine
 (`weasyprint` or `wkhtmltopdf`) on the **server** host.

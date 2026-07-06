@@ -1,5 +1,6 @@
 export const appName = 'Chainvet';
-export const docsRoute = '/docs';
+// The docs are served at the root of the docs.chainvet.dev subdomain.
+export const docsRoute = '/';
 export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 

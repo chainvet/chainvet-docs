@@ -5,7 +5,7 @@ icon: Puzzle
 ---
 
 The **Chainvet** VS Code extension brings hybrid Solidity analysis into your editor.
-It's a thin language client that launches the [`chainvet-lsp`](/docs/frontends/lsp)
+It's a thin language client that launches the [`chainvet-lsp`](/frontends/lsp)
 binary and surfaces its diagnostics plus a dedicated Findings panel.
 
 ## Requirements
@@ -19,7 +19,7 @@ curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=chainvet-lsp 
 
 If the binary lives elsewhere, point `chainvet.serverPath` at it. Prebuilt
 `chainvet-lsp` binaries are currently x86_64-Linux only; other platforms
-[build from source](/docs/installation#build-from-source).
+[build from source](/installation#build-from-source).
 
 ## Features
 
@@ -54,7 +54,7 @@ If the binary lives elsewhere, point `chainvet.serverPath` at it. Prebuilt
 | `chainvet.ai.endpoint` | `http://127.0.0.1:11434` | Ollama endpoint for the AI features. |
 | `chainvet.ai.model` | `qwen2.5-coder:7b` | Ollama model for the AI features. |
 
-The [AI features](/docs/concepts/ai-features) are **off by default** — with them off,
+The [AI features](/concepts/ai-features) are **off by default** — with them off,
 Chainvet runs fully offline and deterministically. The extension passes these
 settings to the language server as the standard `CHAINVET_LLM_*` environment
 variables:
@@ -67,7 +67,7 @@ variables:
 | `chainvet.ai.model` | `CHAINVET_LLM_MODEL` |
 
 So a scan behaves identically whether you run it from the editor, the
-[CLI](/docs/cli/overview), or the [language server](/docs/frontends/lsp) directly.
+[CLI](/cli/overview), or the [language server](/frontends/lsp) directly.
 
 ## How it works
 

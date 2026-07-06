@@ -18,7 +18,7 @@ analysis and function summaries, and applies **45+ detectors** (IDs like `AC-01`
 chainvet scan -m static contracts/
 ```
 
-See the [Detector reference](/docs/detectors/overview) for every rule.
+See the [Detector reference](/detectors/overview) for every rule.
 
 ## Symbolic execution (`symbolic`)
 
@@ -31,7 +31,7 @@ chainvet scan -m symbolic contracts/
 ```
 
 Tunable with `--se-timeout-ms`, `--se-depth`, and `--se-assists` (see
-[Hybrid tuning](/docs/cli/hybrid-tuning)).
+[Hybrid tuning](/cli/hybrid-tuning)).
 
 ## Coverage-guided fuzzing (`fuzzing`)
 
@@ -60,7 +60,7 @@ chainvet scan contracts/        # hybrid is the default
 ```
 
 Because it runs all three, hybrid finds the most — use it for a real audit. It's
-tunable through the [Hybrid tuning flags](/docs/cli/hybrid-tuning) (`--epochs`,
+tunable through the [Hybrid tuning flags](/cli/hybrid-tuning) (`--epochs`,
 `--fuzz-time-ms`, `--hard-cap-ms`, and more); lower them for a faster, shallower
 scan or raise them for a more thorough one.
 
@@ -69,5 +69,5 @@ scan or raise them for a more thorough one.
   confidence comes from solver evidence, and fuzzing confidence comes from concrete
   reproduction — but all three land on the same high/medium/low scale so the
   orchestrator can rank and merge them. See
-  [Severity & Confidence](/docs/concepts/severity-confidence).
+  [Severity & Confidence](/concepts/severity-confidence).
 </Callout>

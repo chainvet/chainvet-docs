@@ -9,7 +9,7 @@ icon: ShieldCheck
 thresholds — so a pipeline both publishes findings and gates on them.
 
 For **GitHub Actions** specifically, prefer the ready-made
-[GitHub Action](/docs/integrations/github-action), which wraps this binary and
+[GitHub Action](/integrations/github-action), which wraps this binary and
 uploads the SARIF for you.
 
 ## Usage
@@ -80,4 +80,4 @@ chainvet:
 
 `when: always` keeps the SARIF artifact even when the gate fails the job. The same
 pattern works for Jenkins, CircleCI, or a pre-commit gate — see the
-[Agent Skills](/docs/integrations/agent-skills) page for the `chainvet-ci` skill.
+[Agent Skills](/integrations/agent-skills) page for the `chainvet-ci` skill.

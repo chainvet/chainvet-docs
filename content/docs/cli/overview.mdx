@@ -30,8 +30,8 @@ chainvet scan -f md -o audit.md <path>  # Cyfrin-style audit report
 
 | Flag | Short | Values / default | Meaning |
 | --- | --- | --- | --- |
-| `--mode` | `-m` | `static` · `symbolic` · `fuzzing` · `hybrid` (default `hybrid`) | Analysis engine(s). See [Engines](/docs/concepts/engines). |
-| `--format` | `-f` | `pretty` · `json` · `md` · `html` · `pdf` (default `pretty`) | Output format. See [Output formats](/docs/cli/output-formats). |
+| `--mode` | `-m` | `static` · `symbolic` · `fuzzing` · `hybrid` (default `hybrid`) | Analysis engine(s). See [Engines](/concepts/engines). |
+| `--format` | `-f` | `pretty` · `json` · `md` · `html` · `pdf` (default `pretty`) | Output format. See [Output formats](/cli/output-formats). |
 | `--output` | `-o` | `FILE` | Write the report to a file instead of stdout. Required for `-f pdf`. |
 | `--min-severity` | `-s` | `low` · `medium` · `high` | Report findings **at or above** this severity. Conflicts with `--severity`. |
 | `--severity` | | `low` · `medium` · `high` (repeatable) | Report findings of **exactly** this severity. |
@@ -40,11 +40,11 @@ chainvet scan -f md -o audit.md <path>  # Cyfrin-style audit report
 | `--quiet` | `-q` | flag | Suppress the banner. |
 | `--no-color` | | flag | Disable colored output (also honors `NO_COLOR`). |
 
-Plus the [Hybrid tuning flags](/docs/cli/hybrid-tuning) (`--epochs`,
+Plus the [Hybrid tuning flags](/cli/hybrid-tuning) (`--epochs`,
 `--fuzz-time-ms`, `--se-depth`, `--seed`, and more) that shape the budget of
 fuzzing/symbolic/hybrid runs.
 
-See [Filtering findings](/docs/cli/filtering) for how the floor and exact filters
+See [Filtering findings](/cli/filtering) for how the floor and exact filters
 interact.
 
 ## `chainvet ir`

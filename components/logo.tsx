@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-/** The horizontal Chainvet wordmark logo (mark + "chainvet"). */
+/** The horizontal Chainvet wordmark logo (mark + "chainvet"), used in the nav. */
 export function ChainvetLogo({ className }: { className?: string }) {
   return (
     <img
@@ -10,9 +10,4 @@ export function ChainvetLogo({ className }: { className?: string }) {
       // The gradient wordmark reads on both light and dark backgrounds.
     />
   );
-}
-
-/** The square Chainvet mark only (no wordmark). */
-export function ChainvetMark({ className }: { className?: string }) {
-  return <img src="/chainvet-mark.svg" alt="Chainvet" className={className} />;
 }

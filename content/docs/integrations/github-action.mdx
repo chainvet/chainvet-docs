@@ -7,7 +7,7 @@ icon: GitBranch
 `chainvet/chainvet-action` is a composite GitHub Action that scans Solidity
 contracts in CI and surfaces findings in **GitHub code scanning** (the repo's
 **Security** tab) via SARIF. It's a thin wrapper over the
-[`chainvet-ci`](/docs/frontends/ci) binary.
+[`chainvet-ci`](/frontends/ci) binary.
 
 ## Drop-in workflow
 
@@ -52,7 +52,7 @@ jobs:
 | `version` | `latest` | Chainvet release to use — a tag like `v0.2.0`, or `latest`. |
 
 The gate trips only when a finding clears **both** `fail-on-severity` and
-`fail-on-confidence` — the same [gating semantics](/docs/frontends/ci) as
+`fail-on-confidence` — the same [gating semantics](/frontends/ci) as
 `chainvet-ci`.
 
 ## How it works

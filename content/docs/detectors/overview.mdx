@@ -14,14 +14,14 @@ canonical rule set advertised as "45+ detectors".
 
 | Prefix | Category | Detectors | Page |
 | --- | --- | --- | --- |
-| `AC` | Access Control | 18 | [Access Control](/docs/detectors/access-control) |
-| `AR` | Arithmetic | 4 | [Arithmetic](/docs/detectors/arithmetic) |
-| `BM` | Block Manipulation | 3 | [Block Manipulation](/docs/detectors/block-manipulation) |
-| `CR` | Cryptographic | 2 | [Cryptographic](/docs/detectors/cryptographic) |
-| `DS` | Denial of Service | 7 | [Denial of Service](/docs/detectors/denial-of-service) |
-| `RE` | Reentrancy | 5 | [Reentrancy](/docs/detectors/reentrancy) |
-| `SM` | Storage & Memory | 7 | [Storage & Memory](/docs/detectors/storage-memory) |
-| `MI` | Miscellaneous | 2 | [Miscellaneous](/docs/detectors/miscellaneous) |
+| `AC` | Access Control | 18 | [Access Control](/detectors/access-control) |
+| `AR` | Arithmetic | 4 | [Arithmetic](/detectors/arithmetic) |
+| `BM` | Block Manipulation | 3 | [Block Manipulation](/detectors/block-manipulation) |
+| `CR` | Cryptographic | 2 | [Cryptographic](/detectors/cryptographic) |
+| `DS` | Denial of Service | 7 | [Denial of Service](/detectors/denial-of-service) |
+| `RE` | Reentrancy | 5 | [Reentrancy](/detectors/reentrancy) |
+| `SM` | Storage & Memory | 7 | [Storage & Memory](/detectors/storage-memory) |
+| `MI` | Miscellaneous | 2 | [Miscellaneous](/detectors/miscellaneous) |
 
 ## How to read a detector
 
@@ -33,7 +33,7 @@ Every finding a detector produces carries two ratings — read them together:
   `low`). A detector raises or lowers it per finding when it has local evidence;
   otherwise it uses a per-kind default. The values in these tables are that default.
 
-See [Severity & Confidence](/docs/concepts/severity-confidence) for the full model,
+See [Severity & Confidence](/concepts/severity-confidence) for the full model,
 and note that some detectors emit different severities depending on context (for
 example, arithmetic overflow is `medium` in an `unchecked` block but `high` on
 untrusted input in Solidity < 0.8) — such cases are shown as a range.
@@ -41,5 +41,5 @@ untrusted input in Solidity < 0.8) — such cases are shown as a range.
 <Callout title="These run in every mode">
   The detectors are the static-analysis layer. They run on their own in `-m static`
   and also participate in `hybrid` mode, where symbolic execution and fuzzing confirm
-  and extend their findings. See [Analysis engines](/docs/concepts/engines).
+  and extend their findings. See [Analysis engines](/concepts/engines).
 </Callout>

@@ -17,7 +17,7 @@ frontend → IR / CFG / SSA → engines → orchestrator → front end
 
 1. **Frontend** (`chainvet-frontend`) — loads Solidity: `solc` first, a
    [tree-sitter](https://tree-sitter.github.io/) parser as a fallback, and an
-   optional [AI fallback](/docs/concepts/ai-features) when both fail. Produces a
+   optional [AI fallback](/concepts/ai-features) when both fail. Produces a
    `NormalizedAst`.
 2. **Core** (`chainvet-core`) — the shared types every crate agrees on: the
    normalized AST, a SlithIR-style **IR**, control-flow graph (**CFG**), **SSA**,
@@ -72,5 +72,5 @@ crates/
 <Callout title="Where integrations live">
   The **VS Code extension**, **Web UI**, and **GitHub Action** live in their own
   repositories and consume the LSP, server, and CI front ends respectively — see
-  [Integrations](/docs/integrations/github-action).
+  [Integrations](/integrations/github-action).
 </Callout>

@@ -12,7 +12,7 @@ capability works in any LSP client, not just VS Code.
 ## Run it
 
 Point any LSP client at the `chainvet-lsp` binary; it speaks LSP over stdio. The
-[VS Code extension](/docs/integrations/vscode) launches it for you, but Neovim,
+[VS Code extension](/integrations/vscode) launches it for you, but Neovim,
 IntelliJ, and other editors can drive it too.
 
 Install it on your `PATH`:
@@ -34,14 +34,14 @@ curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=chainvet-lsp 
 
 ## Configuration
 
-The server reads the [AI feature](/docs/concepts/ai-features) environment variables
+The server reads the [AI feature](/concepts/ai-features) environment variables
 (`CHAINVET_LLM_REPORT`, `CHAINVET_LLM_FALLBACK_PARSER`, endpoint, model). The VS Code
 extension surfaces these as settings and passes them through when it spawns the
 server.
 
 <Callout title="Editor integration">
   Most users won't run this binary directly — install the
-  [VS Code extension](/docs/integrations/vscode), which manages the language server
+  [VS Code extension](/integrations/vscode), which manages the language server
   and adds a Findings panel. This page is for wiring `chainvet-lsp` into other LSP
   clients.
 </Callout>

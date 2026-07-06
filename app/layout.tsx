@@ -21,7 +21,11 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+      { url: '/favicon.ico', sizes: '256x256' },
+    ],
   },
   openGraph: {
     title: `${appName} Documentation`,

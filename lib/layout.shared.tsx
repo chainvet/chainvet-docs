@@ -9,13 +9,8 @@ export function baseOptions(): BaseLayoutProps {
     },
     links: [
       {
-        text: 'Documentation',
-        url: '/docs',
-        active: 'nested-url',
-      },
-      {
         text: 'Install',
-        url: '/docs/installation',
+        url: '/installation',
         active: 'url',
       },
     ],

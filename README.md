@@ -35,13 +35,16 @@ needed.
 
 ## Structure
 
+The docs are served at the **root** of the subdomain (e.g. `/installation`), so the
+marketing landing at `chainvet.dev` isn't duplicated here.
+
 | Path | What |
 | --- | --- |
 | `content/docs/**` | The documentation content (MDX + `meta.json` sidebar order). |
-| `app/(home)/page.tsx` | The branded landing page. |
+| `app/(docs)/[[...slug]]/page.tsx` | The catch-all that renders every doc page at the root. |
 | `app/global.css` | The Catppuccin (Latte/Mocha) brand theme. |
 | `lib/source.ts`, `lib/shared.ts`, `lib/layout.shared.tsx` | Content source, site constants, nav. |
-| `public/` | Logos, favicon, `CNAME`, `.nojekyll`. |
+| `public/` | Logos, favicons (`.svg`/`.png`/`.ico`), `CNAME`, `.nojekyll`. |
 
 ## License
 

@@ -4,7 +4,7 @@ description: Scan your first Solidity contract with Chainvet and read the result
 icon: Rocket
 ---
 
-This guide assumes you've [installed](/docs/installation) the `chainvet` CLI
+This guide assumes you've [installed](/installation) the `chainvet` CLI
 (`chainvet --version` works).
 
 ## Scan a contract
@@ -34,7 +34,7 @@ Each finding carries:
 
 Triage by **severity** first, then **confidence**: a high-severity, high-confidence
 finding is the one to fix first. Low-confidence findings may include false
-positives — read the location. See [Severity & Confidence](/docs/concepts/severity-confidence).
+positives — read the location. See [Severity & Confidence](/concepts/severity-confidence).
 
 ## Pick a faster mode
 
@@ -46,7 +46,7 @@ chainvet scan -m static contracts/
 ```
 
 The modes are `static`, `symbolic`, `fuzzing`, and `hybrid` — see
-[Analysis engines](/docs/concepts/engines).
+[Analysis engines](/concepts/engines).
 
 ## Get machine-readable output
 
@@ -66,13 +66,13 @@ chainvet scan -f html -o audit.html contracts/
 chainvet scan -f pdf  -o audit.pdf  contracts/   # needs weasyprint/wkhtmltopdf
 ```
 
-See [Audit reports](/docs/cli/audit-reports) for what's inside.
+See [Audit reports](/cli/audit-reports) for what's inside.
 
 ## Where to next
 
 <Cards>
-  <Card title="CLI overview" href="/docs/cli/overview" description="Commands, flags, and modes." />
-  <Card title="Filtering findings" href="/docs/cli/filtering" description="Focus on the findings that matter." />
-  <Card title="CI integration" href="/docs/frontends/ci" description="Gate a pipeline on findings via SARIF." />
-  <Card title="VS Code" href="/docs/integrations/vscode" description="Analyze contracts in your editor." />
+  <Card title="CLI overview" href="/cli/overview" description="Commands, flags, and modes." />
+  <Card title="Filtering findings" href="/cli/filtering" description="Focus on the findings that matter." />
+  <Card title="CI integration" href="/frontends/ci" description="Gate a pipeline on findings via SARIF." />
+  <Card title="VS Code" href="/integrations/vscode" description="Analyze contracts in your editor." />
 </Cards>

@@ -5,7 +5,7 @@ icon: MonitorSmartphone
 ---
 
 **Chainvet Web** is a static, build-less web UI (plain HTML/CSS/JS — no framework,
-no bundler) that talks to a running [`chainvet-server`](/docs/frontends/server) over
+no bundler) that talks to a running [`chainvet-server`](/frontends/server) over
 its HTTP API. It aims to be a full alternative to the CLI: browse a project,
 configure a scan, run it with live progress, and download the branded audit report.
 
@@ -37,7 +37,7 @@ python3 serve.py --root /path/to/your/contracts
   iters, epoch time, SE timeout, SE depth, SE assists, seed) shown in hybrid mode.
 - **Live progress** — per-file phase, elapsed time, and cancel.
 - **Audit report download** — Markdown, HTML, or PDF of the most recent scan (the
-  same Cyfrin-style [report](/docs/cli/audit-reports) the CLI produces). PDF requires
+  same Cyfrin-style [report](/cli/audit-reports) the CLI produces). PDF requires
   an HTML→PDF engine on the server host.
 
 ## Run the pieces by hand
