@@ -1,0 +1,76 @@
+---
+title: Architecture
+description: How Chainvet's frontend, IR, engines, orchestrator, and front ends fit together as a Cargo workspace.
+icon: Network
+---
+
+Chainvet is a **Cargo workspace**. The analysis engines are pure libraries that do
+no I/O; one orchestration crate exposes a typed `scan()` facade; thin front-end
+binaries render the result. This is what lets a CLI, a CI binary, a REST server, and
+a language server all produce the same findings.
+
+## The pipeline
+
+```
+frontend → IR / CFG / SSA → engines → orchestrator → front end
+```
+
+1. **Frontend** (`chainvet-frontend`) — loads Solidity: `solc` first, a
+   [tree-sitter](https://tree-sitter.github.io/) parser as a fallback, and an
+   optional [AI fallback](/docs/concepts/ai-features) when both fail. Produces a
+   `NormalizedAst`.
+2. **Core** (`chainvet-core`) — the shared types every crate agrees on: the
+   normalized AST, a SlithIR-style **IR**, control-flow graph (**CFG**), **SSA**,
+   and the finding model. No engine logic, no I/O.
+3. **Engines** — each a pure library:
+   - `chainvet-sa` — static analysis: call graph, taint analysis, function
+     summaries, and 45+ detectors. Defines the shared `Confidence` scale.
+   - `chainvet-se` — symbolic execution over Z3; returns typed findings and
+     concrete witnesses.
+   - `chainvet-fuzzing` — a coverage-guided greybox fuzzer (generator, mutator,
+     executor, oracle, scheduler).
+   - `chainvet-hybrid` — the control loop that ties the three together.
+4. **Orchestrator** (`chainvet-orchestrator`) — `scan(...) -> ScanResult` runs the
+   engine(s), unifies findings (merge + dedup), and applies optional AI review.
+   **This is the single entry point every front end calls.**
+5. **Front ends** — thin renderers built on the orchestrator plus the shared
+   `chainvet-report` crate:
+   - `chainvet-cli` — text / JSON + audit reports
+   - `chainvet-ci` — SARIF + exit codes
+   - `chainvet-server` — an axum REST API
+   - `chainvet-lsp` — tower-lsp diagnostics
+
+## The workspace
+
+```
+crates/
+  chainvet-core          shared types: normalized AST, IR, CFG, SSA, findings
+  chainvet-frontend      load Solidity: solc → tree-sitter → optional AI fallback
+  chainvet-llm           LLM transport (Ollama today), shared by frontend + reports
+  chainvet-sa            static analysis: call graph, taint, detectors
+  chainvet-se            symbolic execution (Z3)
+  chainvet-fuzzing       coverage-guided greybox fuzzer
+  chainvet-hybrid        the hybrid control loop
+  chainvet-orchestrator  scan(config) -> ScanResult (merge/dedup + AI review)
+  chainvet-report        Cyfrin-style audit report (md/html/pdf)
+  chainvet-cli           binary: chainvet
+  chainvet-ci            binary: chainvet-ci  (SARIF + fail-on)
+  chainvet-server        binary: chainvet-server (REST API)
+  chainvet-lsp           binary: chainvet-lsp (language server)
+```
+
+## Design rules
+
+- **Purity.** `chainvet-core`, `-sa`, `-se`, `-fuzzing`, and `-hybrid` must not
+  depend on a web/LSP/async stack (axum, tokio, reqwest). All I/O lives in the front
+  ends. Engines take typed inputs and return typed results.
+- **One entry point.** Front ends reach the engines only through
+  `chainvet-orchestrator`'s `scan()` — never by calling an engine directly.
+- **Stable JSON.** The hybrid `--json` output (`HybridJsonReport`) is the stable,
+  benchmark-consumed schema; its shape doesn't change casually.
+
+<Callout title="Where integrations live">
+  The **VS Code extension**, **Web UI**, and **GitHub Action** live in their own
+  repositories and consume the LSP, server, and CI front ends respectively — see
+  [Integrations](/docs/integrations/github-action).
+</Callout>

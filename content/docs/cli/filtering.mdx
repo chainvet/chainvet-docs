@@ -1,0 +1,57 @@
+---
+title: Filtering Findings
+description: Focus a scan on the findings that matter — by severity, confidence, or both, using floors or exact values.
+icon: Filter
+---
+
+Chainvet filters findings on two independent axes — **severity** and **confidence**
+— and each axis offers two mutually-exclusive styles: a **floor** or an **exact**
+set.
+
+## Floor: at or above
+
+```sh
+chainvet scan -s high contracts/     # severity >= high
+chainvet scan -c high contracts/     # confidence >= high (most precise only)
+chainvet scan -s medium -c medium .  # combine the two axes
+```
+
+- `-s` / `--min-severity` — report findings at or above this severity.
+- `-c` / `--min-confidence` — report findings at or above this confidence.
+
+## Exact: only these values (repeatable)
+
+```sh
+chainvet scan --severity medium contracts/                 # exactly medium
+chainvet scan --severity medium --severity high contracts/ # medium OR high
+chainvet scan --confidence high contracts/                 # exactly high confidence
+```
+
+- `--severity` — report findings of exactly this severity (repeat to allow several).
+- `--confidence` — report findings of exactly this confidence (repeatable).
+
+## The one rule
+
+<Callout type="warn" title="Floor and exact conflict — per axis">
+  You cannot combine `-s` with `--severity` (nor `-c` with `--confidence`) — the
+  floor and the exact filter conflict on the same axis and the CLI will reject it.
+  The two **axes** are independent, so `-s high --confidence high` is fine.
+</Callout>
+
+## Severity vs. confidence
+
+The two axes answer different questions:
+
+- **`-s high`** — show me the highest-**impact** findings.
+- **`-c high`** — show me only the findings the analyzer is most **confident** about
+  (the most precise detections).
+
+See [Severity & Confidence](/docs/concepts/severity-confidence) for the model.
+
+## Filters are display-only
+
+<Callout title="JSON stays complete">
+  Filters affect only the human-readable `pretty` output. The `-f json` payload is
+  always complete and unfiltered, so downstream tooling gets every finding regardless
+  of the flags you pass.
+</Callout>

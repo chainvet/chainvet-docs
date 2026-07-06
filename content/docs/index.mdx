@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: Chainvet is a hybrid security analyzer for Solidity smart contracts — static analysis, symbolic execution, and coverage-guided fuzzing in one feedback loop.
+icon: BookOpen
+---
+
+**Chainvet** is a hybrid security analyzer for Solidity smart contracts. It
+combines three engines over a shared frontend and IR — **static analysis**
+(45+ detectors), **symbolic execution** (Z3), and **coverage-guided fuzzing** —
+plus a **hybrid** mode that runs them as one feedback loop: static analysis steers
+symbolic execution, whose concrete witnesses seed the fuzzer, whose coverage stalls
+trigger further symbolic assists.
+
+Findings are merged, deduplicated, and tagged with a **confidence** level (high /
+medium / low) reflecting how precise the detector that reported them is.
+
+<Callout title="Runs offline by default">
+  With the optional AI features off (the default), Chainvet runs fully offline and
+  deterministically — no network calls, reproducible results.
+</Callout>
+
+## Why Chainvet
+
+- **One analyzer, many front ends.** The same engine powers a CLI, a CI binary
+  (SARIF), a REST server, and a language server — so local audits, pipelines, and
+  your editor all agree.
+- **Hybrid by default.** Instead of running detectors, a symbolic engine, and a
+  fuzzer in isolation, Chainvet wires them into a loop that reaches deeper bugs.
+- **Two axes, not one.** Every finding carries both a **severity** (impact) and a
+  **confidence** (the detector's own precision) so you can triage by what matters.
+- **Audit-ready output.** Emit a Cyfrin-style audit report (Markdown, HTML, or PDF)
+  straight from a scan.
+
+## The ecosystem
+
+Chainvet is a Cargo workspace of pure engine libraries behind a single `scan()`
+facade, with thin front ends that render the result. Integrations live in their own
+repositories.
+
+<Cards>
+  <Card title="Install Chainvet" href="/docs/installation" description="One-line install on Linux, or build from source." />
+  <Card title="Quick Start" href="/docs/quickstart" description="Scan your first contract in under a minute." />
+  <Card title="CLI reference" href="/docs/cli/overview" description="The chainvet analyzer: scan, filter, report." />
+  <Card title="Architecture" href="/docs/concepts/architecture" description="How the frontend, engines, and orchestrator fit together." />
+  <Card title="Detector reference" href="/docs/detectors/overview" description="All 8 categories and 48 detectors." />
+  <Card title="Integrations" href="/docs/integrations/github-action" description="GitHub Action, VS Code, Web UI, Agent Skills." />
+</Cards>
+
+## The four binaries
+
+| Binary | Front end | Docs |
+| --- | --- | --- |
+| `chainvet` | CLI analyzer + audit reports | [CLI](/docs/cli/overview) |
+| `chainvet-ci` | SARIF 2.1.0 + fail-on gating | [CI](/docs/frontends/ci) |
+| `chainvet-server` | REST API (consumed by the Web UI) | [Server](/docs/frontends/server) |
+| `chainvet-lsp` | Language server (consumed by the VS Code extension) | [LSP](/docs/frontends/lsp) |
+
+All are installable from a single script — see [Installation](/docs/installation).
+
+## License
+
+Chainvet is open source under the **MIT** license.

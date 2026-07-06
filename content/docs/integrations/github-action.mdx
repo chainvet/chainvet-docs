@@ -1,0 +1,73 @@
+---
+title: GitHub Action
+description: Scan Solidity contracts on push/PR and surface findings in GitHub code scanning via SARIF.
+icon: GitBranch
+---
+
+`chainvet/chainvet-action` is a composite GitHub Action that scans Solidity
+contracts in CI and surfaces findings in **GitHub code scanning** (the repo's
+**Security** tab) via SARIF. It's a thin wrapper over the
+[`chainvet-ci`](/docs/frontends/ci) binary.
+
+## Drop-in workflow
+
+Create `.github/workflows/chainvet.yml`:
+
+```yaml
+name: Chainvet
+on: [push, pull_request]
+
+permissions:
+  security-events: write   # required to upload SARIF
+  contents: read
+
+jobs:
+  chainvet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: chainvet/chainvet-action@v1
+        with:
+          path: contracts
+          mode: hybrid
+          fail-on-severity: high
+```
+
+<Callout type="warn" title="Permissions are required">
+  Without `security-events: write` the SARIF upload fails. Set `path` to where your
+  `.sol` files live (`.` scans the whole repo).
+</Callout>
+
+## Inputs
+
+| Input | Default | Description |
+| --- | --- | --- |
+| `path` | `.` | File or directory to scan. |
+| `mode` | `hybrid` | `static` · `symbolic` · `fuzzing` · `hybrid`. `static` is fastest for CI. |
+| `fail-on-severity` | `high` | Fail the job when a finding meets this severity (`high`/`medium`/`low`). |
+| `fail-on-confidence` | `low` | Only fail on findings at this confidence or above. `low` gates on any finding; `high` gates only on the most precise detections. |
+| `no-fail` | `false` | Scan and upload SARIF but never fail the job (report-only). Mutually exclusive with `fail-on-severity` / `fail-on-confidence`. |
+| `sarif-file` | `chainvet.sarif` | Where to write the SARIF report. |
+| `upload-sarif` | `true` | Upload the SARIF to GitHub code scanning. |
+| `version` | `latest` | Chainvet release to use — a tag like `v0.2.0`, or `latest`. |
+
+The gate trips only when a finding clears **both** `fail-on-severity` and
+`fail-on-confidence` — the same [gating semantics](/docs/frontends/ci) as
+`chainvet-ci`.
+
+## How it works
+
+1. Installs `chainvet-ci` by **downloading the prebuilt binary** for the selected
+   release (seconds); falls back to a **from-source build** (Z3 + Rust) if no
+   prebuilt matches — e.g. a branch name in `version`, or a non-x86_64-Linux runner.
+2. Runs the scan and writes SARIF.
+3. **Uploads the SARIF even when the scan fails the threshold**, so findings always
+   land in the Security tab.
+4. Exits non-zero if `fail-on-severity` was met — gating the PR after upload.
+
+Review findings under **Security → Code scanning** on the repo.
+
+<Callout title="Report-only PRs">
+  To surface findings without ever failing a PR, set `no-fail: true` and drop the
+  `fail-on-*` inputs (they're mutually exclusive with it).
+</Callout>

@@ -1,0 +1,73 @@
+---
+title: Analysis Engines
+description: The four analysis modes — static, symbolic, fuzzing, and the hybrid feedback loop that combines them.
+icon: Cpu
+---
+
+Chainvet has four analysis modes, selected with `-m` / `--mode` (default `hybrid`).
+Each engine is a pure library; the orchestrator merges and deduplicates their
+findings onto one severity/confidence scale.
+
+## Static analysis (`static`)
+
+Fast and deterministic — no fuzzing budget. Builds a call graph, runs taint
+analysis and function summaries, and applies **45+ detectors** (IDs like `AC-01`,
+`RE-04`). Best for CI and quick passes.
+
+```sh
+chainvet scan -m static contracts/
+```
+
+See the [Detector reference](/docs/detectors/overview) for every rule.
+
+## Symbolic execution (`symbolic`)
+
+Z3-backed path exploration. It reasons about which inputs drive the contract into a
+vulnerable state and returns **concrete witnesses** proving a path is reachable —
+turning "this looks risky" into "here is an input that triggers it."
+
+```sh
+chainvet scan -m symbolic contracts/
+```
+
+Tunable with `--se-timeout-ms`, `--se-depth`, and `--se-assists` (see
+[Hybrid tuning](/docs/cli/hybrid-tuning)).
+
+## Coverage-guided fuzzing (`fuzzing`)
+
+A greybox fuzzer — generator, mutator, executor, oracle, scheduler — that mutates
+inputs to maximize code coverage and drives contracts into failing states. Set
+`--seed` for reproducible runs.
+
+```sh
+chainvet scan -m fuzzing contracts/
+```
+
+## Hybrid (`hybrid`, the default)
+
+The reason Chainvet exists. Instead of running the three engines in isolation,
+hybrid mode wires them into a single feedback loop:
+
+- **static analysis steers symbolic execution** — detectors point the solver at
+  suspicious code,
+- **symbolic witnesses seed the fuzzer** — concrete inputs give the fuzzer a head
+  start,
+- **coverage stalls trigger further symbolic assists** — when the fuzzer plateaus,
+  the solver helps it past the wall.
+
+```sh
+chainvet scan contracts/        # hybrid is the default
+```
+
+Because it runs all three, hybrid finds the most — use it for a real audit. It's
+tunable through the [Hybrid tuning flags](/docs/cli/hybrid-tuning) (`--epochs`,
+`--fuzz-time-ms`, `--hard-cap-ms`, and more); lower them for a faster, shallower
+scan or raise them for a more thorough one.
+
+<Callout title="One scale across engines">
+  Static confidence is heuristic (a detector's expected precision), symbolic
+  confidence comes from solver evidence, and fuzzing confidence comes from concrete
+  reproduction — but all three land on the same high/medium/low scale so the
+  orchestrator can rank and merge them. See
+  [Severity & Confidence](/docs/concepts/severity-confidence).
+</Callout>

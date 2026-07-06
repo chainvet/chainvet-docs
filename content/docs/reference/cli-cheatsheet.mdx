@@ -1,0 +1,65 @@
+---
+title: CLI Cheatsheet
+description: The most-used Chainvet commands on one page.
+icon: SquareTerminal
+---
+
+A quick reference. See [CLI overview](/docs/cli/overview) for the full flag list.
+
+## Scan
+
+```sh
+chainvet scan <path>                    # hybrid analysis (default)
+chainvet scan -m static <path>          # static | symbolic | fuzzing | hybrid
+chainvet scan -f json <path>            # machine-readable output
+chainvet scan -o report.txt <path>      # write the report to a file
+chainvet ir <path> -f text              # inspect the IR (text | json | tuple)
+```
+
+## Filter
+
+```sh
+chainvet scan -s high <path>            # severity >= high (floor)
+chainvet scan --severity medium <path>  # exactly medium (repeatable)
+chainvet scan -c high <path>            # confidence >= high (floor)
+chainvet scan --confidence medium <path># exactly medium confidence
+```
+
+`-s`/`--severity` and `-c`/`--confidence` are mutually exclusive per axis.
+
+## Audit reports
+
+```sh
+chainvet scan -f md   -o audit.md   <path>   # Markdown
+chainvet scan -f html -o audit.html <path>   # self-contained HTML
+chainvet scan -f pdf  -o audit.pdf  <path>   # PDF (needs weasyprint/wkhtmltopdf)
+```
+
+## Hybrid tuning
+
+```sh
+chainvet scan --epochs 200 --fuzz-time-ms 60000 <path>   # deeper
+chainvet scan --hard-cap-ms 5000 <path>                  # faster
+chainvet scan --seed 42 <path>                           # reproducible fuzzing
+```
+
+## CI
+
+```sh
+chainvet-ci <path> --mode hybrid -s high --sarif chainvet.sarif   # gate + SARIF
+chainvet-ci <path> --no-fail --sarif chainvet.sarif              # report-only
+```
+
+## Server & Web UI
+
+```sh
+CHAINVET_SERVER_ROOT=./contracts chainvet-server   # REST on :8080
+python3 serve.py --root ./contracts                # server + Web UI + browser
+```
+
+## Install
+
+```sh
+curl -fsSL https://install.chainvet.dev/install.sh | sh                  # prompt
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=all sh
+```

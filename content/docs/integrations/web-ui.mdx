@@ -1,0 +1,59 @@
+---
+title: Web UI
+description: A static web front end for Chainvet — browse a project, configure a scan, run it with live progress, and download the audit report.
+icon: MonitorSmartphone
+---
+
+**Chainvet Web** is a static, build-less web UI (plain HTML/CSS/JS — no framework,
+no bundler) that talks to a running [`chainvet-server`](/docs/frontends/server) over
+its HTTP API. It aims to be a full alternative to the CLI: browse a project,
+configure a scan, run it with live progress, and download the branded audit report.
+
+## Run it
+
+One command starts the API server, serves the UI, waits until it's healthy, and
+opens your browser (Ctrl-C stops both):
+
+```sh
+python3 serve.py --root /path/to/your/contracts
+```
+
+`serve.py` needs `chainvet-server` on your `PATH` (install with
+`CHAINVET_BINS=chainvet-server`, or pass `--server-bin /path/to/chainvet-server`).
+
+| Flag | Default | Purpose |
+| --- | --- | --- |
+| `--root` | current dir | The contracts root to scan. |
+| `--server-bin` | `chainvet-server` | Path to the server binary. |
+| `--api-port` | `8080` | Port for the API server. |
+| `--ui-port` | `5173` | Port for the static UI. |
+| `--no-browser` | — | Don't open a browser automatically. |
+
+## Features
+
+- **File browser** — navigate the contracts root and pick a file or folder.
+- **Configuration** — severity/confidence filters (mirroring the CLI's `-s`/`-c` and
+  exact filters) plus the hybrid tuning knobs (epochs, fuzz time, hard cap, fuzz
+  iters, epoch time, SE timeout, SE depth, SE assists, seed) shown in hybrid mode.
+- **Live progress** — per-file phase, elapsed time, and cancel.
+- **Audit report download** — Markdown, HTML, or PDF of the most recent scan (the
+  same Cyfrin-style [report](/docs/cli/audit-reports) the CLI produces). PDF requires
+  an HTML→PDF engine on the server host.
+
+## Run the pieces by hand
+
+```sh
+# 1. start the API server (listens on 127.0.0.1:8080)
+CHAINVET_SERVER_ROOT=/path/to/contracts chainvet-server
+
+# 2. serve the UI with any static server
+cd assets && python3 -m http.server 5173
+```
+
+Then open `http://127.0.0.1:5173`. The UI reads `window.CHAINVET_API_BASE` (default
+`http://127.0.0.1:8080`) to find the API — the launcher injects it; set it yourself
+before `app.js` loads if you run the pieces manually:
+
+```html
+<script>window.CHAINVET_API_BASE = "http://my-host:8080";</script>
+```

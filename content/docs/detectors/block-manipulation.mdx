@@ -1,0 +1,21 @@
+---
+title: Block Manipulation
+description: 3 detectors (BM-01…BM-03) for miner-influenceable block variables, transaction ordering, and weak randomness.
+icon: Blocks
+---
+
+Block-manipulation detectors (`BM`) catch reliance on values a miner or an ordering
+adversary can influence — timestamps, transaction order, and randomness derived from
+block data. **3 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| BM-01 | `dangerous-block-timestamp` | Low | High | `block.timestamp` / `now` used in decision logic (conditions, returns, arguments) — miner-influenceable. |
+| BM-02 | `transaction-order-dependency` | Medium | Low | Contract state depends on transaction ordering — front-running / race condition. |
+| BM-03 | `weak-prng` | High | High | Randomness derived from block variables — a predictable, weak PRNG. |
+
+<Callout title="Remediation">
+  Don't use `block.timestamp` or block hashes as a source of randomness or as a
+  precise clock — use a verifiable randomness source such as Chainlink VRF, and
+  design around front-running (commit–reveal, slippage bounds).
+</Callout>

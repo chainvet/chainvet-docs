@@ -1,0 +1,55 @@
+---
+title: AI Features
+description: Two optional, opt-in AI features backed by a local Ollama server — off by default so Chainvet stays offline and deterministic.
+icon: Sparkles
+---
+
+Chainvet has **two** optional AI features. Both are **opt-in and no-ops by default**
+— with them off, Chainvet runs fully offline and deterministically. When enabled,
+they call a local [Ollama](https://ollama.com) server (no data leaves your machine).
+
+## The two features
+
+| Feature | Env var | What it does |
+| --- | --- | --- |
+| AI fallback parser | `CHAINVET_LLM_FALLBACK_PARSER=1` | AI-assisted parsing when **both** solc and tree-sitter fail to parse a file. |
+| AI report review | `CHAINVET_LLM_REPORT=1` | An LLM reviews the findings: drops likely false positives and annotates the rest. |
+
+The fallback parser lives in the frontend; the report review runs in the
+orchestrator after findings are collected.
+
+## Configuration
+
+```sh
+export CHAINVET_LLM_REPORT=1
+export CHAINVET_LLM_ENDPOINT=http://127.0.0.1:11434   # default
+export CHAINVET_LLM_MODEL=qwen2.5-coder:7b            # default
+chainvet scan contracts/
+```
+
+| Env var | Default | Purpose |
+| --- | --- | --- |
+| `CHAINVET_LLM_ENDPOINT` | `http://127.0.0.1:11434` | Ollama endpoint |
+| `CHAINVET_LLM_MODEL` | `qwen2.5-coder:7b` | Ollama model |
+| `CHAINVET_LLM_TIMEOUT_MS` | — | Request timeout |
+| `CHAINVET_LLM_NUM_PREDICT` | — | Token budget per request |
+| `CHAINVET_LLM_DEBUG` | — | Set to `1` for LLM debug logging |
+
+There are additional fallback-parser tuning knobs
+(`CHAINVET_LLM_FALLBACK_TIMEOUT_MS`, `CHAINVET_LLM_FALLBACK_NUM_PREDICT`,
+`CHAINVET_LLM_FALLBACK_MAX_SOURCE_BYTES`, `CHAINVET_LLM_FALLBACK_CHUNK_BYTES`,
+`CHAINVET_LLM_FALLBACK_MAX_CHUNKS`, `CHAINVET_LLM_FALLBACK_DEBUG`) — see the
+[Environment variables](/docs/reference/environment-variables) reference.
+
+<Callout type="warn" title="Reproducibility">
+  Enabling AI review makes a scan's output depend on the model — turn it off for
+  deterministic, reproducible results (for example in CI). The transport is
+  provider-agnostic; Ollama is the implementation wired up today.
+</Callout>
+
+## In the editor
+
+The VS Code extension exposes both features as settings
+(`chainvet.aiReports.enabled`, `chainvet.aiFallbackParser.enabled`) and passes them
+to the language server as environment variables — see
+[VS Code](/docs/integrations/vscode).

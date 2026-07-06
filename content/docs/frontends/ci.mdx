@@ -1,0 +1,83 @@
+---
+title: CI (chainvet-ci)
+description: The chainvet-ci binary emits SARIF 2.1.0 and gates a pipeline on findings by severity and confidence.
+icon: ShieldCheck
+---
+
+`chainvet-ci` is the CI front end. It runs the same analysis as the CLI, emits a
+**SARIF 2.1.0** report, and **exits non-zero** when findings meet configurable
+thresholds — so a pipeline both publishes findings and gates on them.
+
+For **GitHub Actions** specifically, prefer the ready-made
+[GitHub Action](/docs/integrations/github-action), which wraps this binary and
+uploads the SARIF for you.
+
+## Usage
+
+```sh
+chainvet-ci <path> [--mode static|symbolic|fuzzing|hybrid] \
+                   [-s|--fail-on-severity high|medium|low] \
+                   [-c|--fail-on-confidence high|medium|low] \
+                   [--no-fail] [--sarif <out.json>]
+```
+
+```sh
+chainvet-ci contracts/ --mode hybrid --fail-on-severity high --sarif chainvet.sarif
+```
+
+- `<path>` — a `.sol` file or a contracts directory.
+- `--mode` — analysis engine, default `hybrid` (`static` is fastest for CI).
+- `--sarif <file>` — write SARIF to a file. **If omitted, SARIF goes to stdout.**
+
+## Gating semantics
+
+The job fails **only when a finding clears BOTH thresholds**:
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `-s`, `--fail-on-severity` | `high` | Minimum severity that can trip the gate. |
+| `-c`, `--fail-on-confidence` | `low` | Minimum confidence that can trip the gate. `low` = any confidence counts; `high` = only the most precise detections gate. |
+
+So with the defaults, a **high-severity, low-confidence** finding fails the build
+(because `--fail-on-confidence` defaults to `low`). Raise it to gate only on
+high-confidence detections:
+
+```sh
+# fail only on high-severity findings the analyzer is highly confident about
+chainvet-ci contracts/ -s high -c high --sarif chainvet.sarif
+```
+
+<Callout title="Nothing is silently exempt">
+  Unknown or absent severity/confidence ranks as `low`, so it is never silently let
+  through the gate.
+</Callout>
+
+## Report-only mode
+
+`--no-fail` runs the scan and emits SARIF but **never fails the job**. It is
+**mutually exclusive** with `--fail-on-severity` / `--fail-on-confidence` — pass one
+or the other, not both.
+
+```sh
+chainvet-ci contracts/ --no-fail --sarif chainvet.sarif
+```
+
+## Example: GitLab CI
+
+```yaml
+chainvet:
+  image: ubuntu:latest
+  script:
+    - curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=chainvet-ci sh
+    - chainvet-ci contracts/ --mode hybrid -s high --sarif chainvet.sarif
+  artifacts:
+    when: always
+    paths:
+      - chainvet.sarif
+    reports:
+      sast: chainvet.sarif
+```
+
+`when: always` keeps the SARIF artifact even when the gate fails the job. The same
+pattern works for Jenkins, CircleCI, or a pre-commit gate — see the
+[Agent Skills](/docs/integrations/agent-skills) page for the `chainvet-ci` skill.

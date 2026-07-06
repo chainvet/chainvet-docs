@@ -1,0 +1,5 @@
+{
+  "title": "Front Ends",
+  "icon": "AppWindow",
+  "pages": ["ci", "server", "lsp"]
+}

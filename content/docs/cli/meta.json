@@ -1,0 +1,11 @@
+{
+  "title": "CLI",
+  "icon": "Terminal",
+  "pages": [
+    "overview",
+    "filtering",
+    "output-formats",
+    "hybrid-tuning",
+    "audit-reports"
+  ]
+}

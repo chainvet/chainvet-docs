@@ -1,0 +1,69 @@
+---
+title: CLI Overview
+description: The chainvet command — scan Solidity contracts and inspect the IR. Every subcommand and flag.
+icon: Terminal
+---
+
+The core tool is the `chainvet` binary. Run `chainvet scan --help` for the
+authoritative, version-matched help; this page summarizes the interface.
+
+## Subcommands
+
+| Command | Purpose |
+| --- | --- |
+| `chainvet scan <path>` | Analyze a Solidity file or project directory for vulnerabilities. |
+| `chainvet ir <path>` | Dump the intermediate representation (a debug utility). |
+
+`<path>` may be a single `.sol` file or a directory of contracts.
+
+## `chainvet scan`
+
+```sh
+chainvet scan <path>                    # hybrid analysis (the default mode)
+chainvet scan -m static <path>          # pick one engine
+chainvet scan -f json <path>            # machine-readable output
+chainvet scan -s high <path>            # findings at or above a severity
+chainvet scan -f md -o audit.md <path>  # Cyfrin-style audit report
+```
+
+### Flags
+
+| Flag | Short | Values / default | Meaning |
+| --- | --- | --- | --- |
+| `--mode` | `-m` | `static` · `symbolic` · `fuzzing` · `hybrid` (default `hybrid`) | Analysis engine(s). See [Engines](/docs/concepts/engines). |
+| `--format` | `-f` | `pretty` · `json` · `md` · `html` · `pdf` (default `pretty`) | Output format. See [Output formats](/docs/cli/output-formats). |
+| `--output` | `-o` | `FILE` | Write the report to a file instead of stdout. Required for `-f pdf`. |
+| `--min-severity` | `-s` | `low` · `medium` · `high` | Report findings **at or above** this severity. Conflicts with `--severity`. |
+| `--severity` | | `low` · `medium` · `high` (repeatable) | Report findings of **exactly** this severity. |
+| `--min-confidence` | `-c` | `low` · `medium` · `high` | Report findings **at or above** this confidence. Conflicts with `--confidence`. |
+| `--confidence` | | `low` · `medium` · `high` (repeatable) | Report findings of **exactly** this confidence. |
+| `--quiet` | `-q` | flag | Suppress the banner. |
+| `--no-color` | | flag | Disable colored output (also honors `NO_COLOR`). |
+
+Plus the [Hybrid tuning flags](/docs/cli/hybrid-tuning) (`--epochs`,
+`--fuzz-time-ms`, `--se-depth`, `--seed`, and more) that shape the budget of
+fuzzing/symbolic/hybrid runs.
+
+See [Filtering findings](/docs/cli/filtering) for how the floor and exact filters
+interact.
+
+## `chainvet ir`
+
+Dumps Chainvet's SlithIR-style intermediate representation — useful for
+understanding *why* a detector fired, or for debugging parsing. Not needed for a
+normal audit.
+
+```sh
+chainvet ir <path> -f text     # -f text | json | tuple  (default text)
+```
+
+| Flag | Short | Values / default | Meaning |
+| --- | --- | --- | --- |
+| `--format` | `-f` | `text` · `json` · `tuple` (default `text`) | IR dump format. |
+
+## Terminal output
+
+The default `pretty` output is colored and tabular on a terminal. Color turns off
+automatically when the output is piped, under `NO_COLOR`, with `--no-color`, or when
+`--output` is set. The banner is printed to stderr so stdout stays a clean report;
+`-q` suppresses it entirely.

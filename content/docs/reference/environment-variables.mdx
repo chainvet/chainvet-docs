@@ -1,0 +1,66 @@
+---
+title: Environment Variables
+description: Every CHAINVET_* environment variable across the analyzer, reports, server, and installer — plus NO_COLOR.
+icon: Variable
+---
+
+A complete reference of the environment variables Chainvet honors, grouped by where
+they take effect.
+
+## AI / LLM features
+
+All AI is **opt-in and a no-op by default** — with it off, Chainvet runs fully
+offline and deterministically. See [AI features](/docs/concepts/ai-features).
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `CHAINVET_LLM_FALLBACK_PARSER` | off | `=1` enables AI-assisted parsing when both solc and tree-sitter fail. |
+| `CHAINVET_LLM_REPORT` | off | `=1` enables LLM review of findings: drop likely false positives, annotate the rest. |
+| `CHAINVET_LLM_ENDPOINT` | `http://127.0.0.1:11434` | Ollama endpoint. |
+| `CHAINVET_LLM_MODEL` | `qwen2.5-coder:7b` | Ollama model. |
+| `CHAINVET_LLM_TIMEOUT_MS` | — | Request timeout. |
+| `CHAINVET_LLM_NUM_PREDICT` | — | Token budget per request. |
+| `CHAINVET_LLM_DEBUG` | off | `=1` enables LLM debug logging. |
+
+### Fallback-parser tuning
+
+These refine the AI fallback parser (each falls back to the general `CHAINVET_LLM_*`
+value when unset):
+
+| Variable | Effect |
+| --- | --- |
+| `CHAINVET_LLM_FALLBACK_DEBUG` | Debug logging for the fallback parser. |
+| `CHAINVET_LLM_FALLBACK_TIMEOUT_MS` | Request timeout for the fallback parser. |
+| `CHAINVET_LLM_FALLBACK_NUM_PREDICT` | Token budget for the fallback parser. |
+| `CHAINVET_LLM_FALLBACK_MAX_SOURCE_BYTES` | Max source bytes sent to the model. |
+| `CHAINVET_LLM_FALLBACK_CHUNK_BYTES` | Chunk size when splitting large sources. |
+| `CHAINVET_LLM_FALLBACK_MAX_CHUNKS` | Max number of chunks. |
+
+## Reports
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `CHAINVET_PDF_ENGINE` | auto (weasyprint, then wkhtmltopdf) | Force which HTML→PDF engine `-f pdf` uses. |
+
+## Server
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `CHAINVET_SERVER_ROOT` | current directory | Directory that scans resolve against. |
+| `CHAINVET_SERVER_ADDR` | `127.0.0.1:8080` | Listen address. |
+
+## Installer (`install.sh`)
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `CHAINVET_BINS` | prompt, else `chainvet` | Components to install: `all`, or a space-separated list. |
+| `CHAINVET_VERSION` | `latest` | Release tag to install. |
+| `CHAINVET_INSTALL_DIR` | `/usr/local/bin`, else `~/.local/bin` | Install prefix. |
+| `CHAINVET_MENU` | (arrow-key) | `basic` for the numbered menu. |
+| `CHAINVET_NONINTERACTIVE` | (unset) | `1` to never prompt. |
+
+## Terminal
+
+| Variable | Effect |
+| --- | --- |
+| `NO_COLOR` | Disables colored output (same as `--no-color`). |

@@ -1,0 +1,22 @@
+---
+title: Arithmetic
+description: 4 detectors (AR-01…AR-04) for overflow, underflow, precision loss, and unsafe length assignment.
+icon: Calculator
+---
+
+Arithmetic detectors (`AR`) catch numeric bugs — overflow and underflow (especially
+in `unchecked` blocks or Solidity &lt; 0.8), precision loss, and unsafe array-length
+math. **4 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| AR-01 | `division-before-multiplication` | Medium | Medium | Integer division performed before multiplication — avoidable precision loss. |
+| AR-02 | `integer-overflow` | Medium–High | Medium | Arithmetic that can overflow — `medium` inside an `unchecked` block, `high` on untrusted input in Solidity &lt; 0.8. |
+| AR-03 | `integer-underflow` | Medium–High | Medium | Subtraction that can underflow — `medium` in an `unchecked` block, `high` on untrusted input in Solidity &lt; 0.8. |
+| AR-04 | `unsafe-array-length-assignment` | High | Medium | An array `.length` assigned from a user-controlled parameter. |
+
+<Callout title="Remediation">
+  Use Solidity ≥ 0.8's checked arithmetic (or SafeMath on older versions), keep
+  multiplications before divisions to preserve precision, and don't assign array
+  lengths from untrusted input.
+</Callout>

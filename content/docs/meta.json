@@ -1,0 +1,17 @@
+{
+  "title": "Documentation",
+  "root": true,
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "installation",
+    "quickstart",
+    "---Guides---",
+    "concepts",
+    "cli",
+    "frontends",
+    "detectors",
+    "integrations",
+    "reference"
+  ]
+}

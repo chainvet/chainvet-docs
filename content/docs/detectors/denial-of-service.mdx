@@ -1,0 +1,26 @@
+---
+title: Denial of Service
+description: 7 detectors (DS-01…DS-07) for locked funds, gas-limit loops, failing calls, and forced-balance assumptions.
+icon: Ban
+---
+
+Denial-of-service detectors (`DS`) catch ways a contract can be wedged — funds that
+can't be withdrawn, loops that exceed the block gas limit, a single failing external
+call that blocks everyone, and logic that a forced balance change can break. **7
+detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| DS-01 | `hardcoded-gas-transfer` | Low | High | `transfer` / `send` with the hardcoded 2300-gas stipend — breaks under gas repricing. |
+| DS-02 | `locked-ether` | High | Medium | The contract can receive ether but has no way to withdraw it. |
+| DS-03 | `dos-block-gas-limit` | Medium | Medium | An unbounded loop that can exceed the block gas limit. |
+| DS-04 | `dos-with-failed-call` | High | Medium | A single failing external call (e.g. a push payment) can block the whole function for everyone. |
+| DS-05 | `force-ether-balance-check` | High | Medium | Logic that relies on `address(this).balance` equality — forcible via `selfdestruct`. |
+| DS-06 | `unsafe-send-in-require` | High | Medium | `send` / `call` used inside a `require` — a failing recipient DoSes the function. |
+| DS-07 | `unchecked-send` | Medium | Medium | The return value of `send` / a low-level call is not checked — silent failure. |
+
+<Callout title="Remediation">
+  Prefer **pull payments** over push, bound every loop, avoid strict
+  `address(this).balance` equality checks, and always check the return value of
+  low-level calls. See the [pull-payment pattern](https://docs.soliditylang.org/en/latest/common-patterns.html#withdrawal-from-contracts).
+</Callout>

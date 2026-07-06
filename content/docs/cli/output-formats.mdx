@@ -1,0 +1,55 @@
+---
+title: Output Formats
+description: The five output formats — pretty, json, md, html, and pdf — and when to use each.
+icon: FileOutput
+---
+
+`-f` / `--format` selects the output format; `-o` / `--output` writes it to a file.
+
+| Format | Flag | Use it for |
+| --- | --- | --- |
+| Pretty | `-f pretty` (default) | Human reading in a terminal — colored, tabular. |
+| JSON | `-f json` | Scripting and agent workflows — parse it programmatically. |
+| Markdown | `-f md` | A Cyfrin-style audit report as Markdown. |
+| HTML | `-f html` | The same report as a self-contained, branded HTML page. |
+| PDF | `-f pdf` | The same report as a PDF (needs an HTML→PDF engine). |
+
+## Pretty (default)
+
+Colored and tabular on a terminal; auto-plain when piped or under `NO_COLOR`. Force
+plain output with `--no-color`, and suppress the banner with `-q`.
+
+```sh
+chainvet scan contracts/
+```
+
+## JSON
+
+The format to consume programmatically. For hybrid runs this is the stable
+`HybridJsonReport` schema (consumed by benchmarks and the CI front end); otherwise
+it's the raw findings list. JSON is never filtered or colored — it always contains
+every finding.
+
+```sh
+chainvet scan -f json contracts/ > findings.json
+```
+
+## Audit reports (md / html / pdf)
+
+These three render the **same** Cyfrin-style audit report — protocol summary,
+disclaimer, risk classification, and per-finding impact / proof-of-concept /
+mitigation. `md` and `html` print to stdout or `--output`; `pdf` **requires** `-o`.
+
+```sh
+chainvet scan -f md   -o audit.md   contracts/
+chainvet scan -f html -o audit.html contracts/
+chainvet scan -f pdf  -o audit.pdf  contracts/
+```
+
+See [Audit reports](/docs/cli/audit-reports) for the full structure and PDF engine
+requirements.
+
+<Callout title="Write any format to a file">
+  `-o` / `--output FILE` works for every format, not just reports — for example
+  `chainvet scan -o report.txt contracts/` writes the plain report to a file.
+</Callout>

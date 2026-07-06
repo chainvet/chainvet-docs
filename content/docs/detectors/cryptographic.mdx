@@ -1,0 +1,19 @@
+---
+title: Cryptographic
+description: 2 detectors (CR-01, CR-02) for missing signature verification and ECDSA signature malleability.
+icon: Fingerprint
+---
+
+Cryptographic detectors (`CR`) catch flaws in signature handling — trusting data
+that was never verified, and ECDSA malleability. **2 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| CR-01 | `lack-of-signature-verification` | High | Medium | An operation trusts data without verifying an accompanying signature. |
+| CR-02 | `signature-malleability` | Medium | High | ECDSA signature handling vulnerable to malleability (e.g. missing `s`/`v` range checks). |
+
+<Callout title="Remediation">
+  Verify signatures against the expected signer, reject malleable signatures (enforce
+  low-`s` and canonical `v`), and prefer audited libraries such as OpenZeppelin's
+  ECDSA. Include a nonce and domain separator (EIP-712) to prevent replay.
+</Callout>

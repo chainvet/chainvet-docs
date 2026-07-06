@@ -1,0 +1,20 @@
+---
+title: Miscellaneous
+description: 2 detectors (MI-01, MI-02) for variable shadowing and calls made with tainted arguments.
+icon: Shapes
+---
+
+Miscellaneous detectors (`MI`) cover cross-cutting hygiene and taint issues that
+don't fit the other categories. **2 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| MI-01 | `shadowing` | Medium | Low | A variable that shadows a state variable or an outer-scope variable. |
+| MI-02 | `tainted-call` | High | Low | A call made with tainted (attacker-influenced) arguments. |
+
+<Callout title="About MI-02">
+  `tainted-call` is an internal taint-driven detector — it sits outside the 47-row
+  published taxonomy but still runs and reports like any other detector. Shadowing
+  bugs are easy to fix: rename the inner variable so it no longer hides the outer
+  one.
+</Callout>

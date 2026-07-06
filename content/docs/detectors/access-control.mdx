@@ -1,0 +1,37 @@
+---
+title: Access Control
+description: 18 detectors (AC-01…AC-18) for authorization, ownership, and privileged-operation flaws.
+icon: KeyRound
+---
+
+Access-control detectors (`AC`) catch missing or bypassable authorization: who can
+call a privileged function, move tokens, send ether, or destroy the contract. This
+is the largest category — **18 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| AC-01 | `arbitrary-transfer-from` | High | Medium | `transferFrom()` called with an attacker-controllable `from` — anyone can move a victim's approved tokens. |
+| AC-02 | `arbitrary-calldata` | High | Medium | A low-level call whose target address comes from a function parameter — the attacker picks the callee. |
+| AC-03 | `caller-not-checked` | Medium | Medium | An `extcodesize` caller check that can be bypassed (e.g. when called from a constructor). |
+| AC-04 | `contract-destructable` | Medium | High | The contract can be destroyed via `selfdestruct`. |
+| AC-05 | `dangerous-state-var-init` | Medium | Low | A state variable initialized from a dangerous or attacker-influenced value. |
+| AC-06 | `tx-origin` | Medium | High | Authorization via `tx.origin` — phishable; use `msg.sender`. |
+| AC-07 | `default-visibility` | Medium | High | A function or state variable relying on default visibility. |
+| AC-08 | `uninit-permission-check` | High | Medium | A permission/owner check against an uninitialized variable — enables an initialization takeover. |
+| AC-09 | `permit-arbitrary-transfer-from` | High | Medium | `permit()` used with `transferFrom()` where the `from` address is arbitrary. |
+| AC-10 | `missing-sender-check-transfer-from` | High | Medium | `transferFrom()` called without `msg.sender` as the `from` — missing ownership check. |
+| AC-11 | `missing-input-validation` | Medium | Low | Public/external function parameters used without validation. |
+| AC-12 | `arbitrary-ether-send` | High | Medium | Ether sent to an address derived from a function parameter. |
+| AC-13 | `unprotected-selfdestruct` | High | High | `selfdestruct` reachable without an access-control guard. |
+| AC-14 | `unprotected-ether-withdrawal` | High | Medium | An ether withdrawal callable by anyone. |
+| AC-15 | `unsafe-delegatecall` | High | Medium | A low-level `delegatecall` that executes external code in the caller's context. |
+| AC-16 | `unused-return-value` | Medium | Low | The return value of a low-level call/send is ignored. |
+| AC-17 | `public-mint-burn` | High | High | A public/external `mint` or `burn` with no access control. |
+| AC-18 | `arbitrary-storage-write` | High | Medium | Inline assembly `sstore` that may write to an attacker-controlled storage slot. |
+
+<Callout title="Remediation">
+  Gate privileged functions with an explicit `msg.sender` / owner / role check,
+  validate address parameters, and never authorize with `tx.origin`. Chainvet's
+  [audit reports](/docs/cli/audit-reports) include a per-finding mitigation for each
+  of these.
+</Callout>

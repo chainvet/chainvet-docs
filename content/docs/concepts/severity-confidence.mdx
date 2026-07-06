@@ -1,0 +1,61 @@
+---
+title: Severity & Confidence
+description: Chainvet ranks every finding on two independent axes — severity (impact) and confidence (the detector's precision).
+icon: Gauge
+---
+
+Every Chainvet finding carries **two** independent ratings. Keeping them separate is
+what makes triage precise.
+
+## Severity — potential impact
+
+`high` · `medium` · `low`. Severity is the potential impact of the issue if
+exploited. It is assigned per detector when a finding is constructed — for example,
+a reentrant ETH transfer or an arbitrary `selfdestruct` is `high`, while a
+`block.timestamp`-based decision is `low`.
+
+## Confidence — the detector's precision
+
+`high` · `medium` · `low`. Confidence is the reporting detector's own estimate of
+how likely the finding is a **true positive** — not how bad it is.
+
+- **High** — high-precision detection; false positives are rare.
+- **Medium** — plausible but pattern/heuristic-based; warrants manual triage.
+- **Low** — speculative or false-positive-prone.
+
+How it's resolved: a detector uses a per-finding **override** when it has local
+evidence (a guard it saw, a confirmed taint path, an ETH-sending sink); otherwise it
+falls back to a **per-kind default**. Roughly:
+
+- Near-syntactic checks (e.g. `tx.origin`, default visibility, unprotected
+  `selfdestruct`, weak PRNG) default to **high** confidence.
+- Dataflow/heuristic checks (several reentrancy variants, shadowing, tainted call,
+  missing input validation) default to **low**.
+- The rest default to **medium**.
+
+Across engines the meaning is consistent: static confidence is heuristic, symbolic
+execution derives it from solver evidence, and fuzzing from concrete reproduction —
+all on the same scale so the orchestrator can rank and merge findings.
+
+## Triage order
+
+<Callout title="Fix high/high first">
+  Sort by **severity**, then **confidence**. A high-severity, high-confidence
+  finding is the one to fix first. A high-severity, low-confidence finding is worth a
+  careful manual read — it may be real, or a false positive.
+</Callout>
+
+## Filtering by each axis
+
+Both axes are independently filterable in the CLI — by a **floor** (at or above) or
+by **exact** values:
+
+```sh
+chainvet scan -s high contracts/          # severity >= high
+chainvet scan -c high contracts/          # confidence >= high (most precise only)
+chainvet scan --severity medium contracts/    # exactly medium severity
+chainvet scan --confidence high contracts/    # exactly high confidence
+```
+
+See [Filtering findings](/docs/cli/filtering) for the full rules, and the
+[CI gating](/docs/frontends/ci) page for how both axes combine to fail a build.

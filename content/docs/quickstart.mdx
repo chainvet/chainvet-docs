@@ -1,0 +1,78 @@
+---
+title: Quick Start
+description: Scan your first Solidity contract with Chainvet and read the results.
+icon: Rocket
+---
+
+This guide assumes you've [installed](/docs/installation) the `chainvet` CLI
+(`chainvet --version` works).
+
+## Scan a contract
+
+Point `chainvet scan` at a `.sol` file or a directory of contracts. With no flags it
+runs the **hybrid** engine — the deepest mode — and prints a colored, tabular report.
+
+```sh
+chainvet scan Vault.sol
+```
+
+A directory works too — Chainvet loads the whole project:
+
+```sh
+chainvet scan contracts/
+```
+
+## Read the results
+
+Each finding carries:
+
+- a **detector ID** (e.g. `RE-04`, `AC-01`),
+- a **severity** — the potential impact (high / medium / low),
+- a **confidence** — the detector's own precision estimate (high / medium / low),
+- a **category** and the **engine** that found it,
+- a **message** and a **source location**.
+
+Triage by **severity** first, then **confidence**: a high-severity, high-confidence
+finding is the one to fix first. Low-confidence findings may include false
+positives — read the location. See [Severity & Confidence](/docs/concepts/severity-confidence).
+
+## Pick a faster mode
+
+Hybrid is thorough but spends a fuzzing budget. For a quick, deterministic pass use
+static analysis:
+
+```sh
+chainvet scan -m static contracts/
+```
+
+The modes are `static`, `symbolic`, `fuzzing`, and `hybrid` — see
+[Analysis engines](/docs/concepts/engines).
+
+## Get machine-readable output
+
+For scripting and agent workflows, emit JSON:
+
+```sh
+chainvet scan -f json Vault.sol
+```
+
+## Generate an audit report
+
+Produce a Cyfrin-style audit report in Markdown, HTML, or PDF:
+
+```sh
+chainvet scan -f md   -o audit.md   contracts/
+chainvet scan -f html -o audit.html contracts/
+chainvet scan -f pdf  -o audit.pdf  contracts/   # needs weasyprint/wkhtmltopdf
+```
+
+See [Audit reports](/docs/cli/audit-reports) for what's inside.
+
+## Where to next
+
+<Cards>
+  <Card title="CLI overview" href="/docs/cli/overview" description="Commands, flags, and modes." />
+  <Card title="Filtering findings" href="/docs/cli/filtering" description="Focus on the findings that matter." />
+  <Card title="CI integration" href="/docs/frontends/ci" description="Gate a pipeline on findings via SARIF." />
+  <Card title="VS Code" href="/docs/integrations/vscode" description="Analyze contracts in your editor." />
+</Cards>

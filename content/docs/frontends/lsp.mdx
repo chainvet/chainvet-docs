@@ -1,0 +1,47 @@
+---
+title: Language Server (chainvet-lsp)
+description: A stdio language server that publishes Chainvet findings as editor diagnostics — usable from any LSP client.
+icon: Code
+---
+
+`chainvet-lsp` is a stdio [language server](https://microsoft.github.io/language-server-protocol/)
+built on [tower-lsp](https://github.com/ebkalderon/tower-lsp). It publishes Chainvet
+findings as **diagnostics** and exposes an on-demand hybrid scan — so the same
+capability works in any LSP client, not just VS Code.
+
+## Run it
+
+Point any LSP client at the `chainvet-lsp` binary; it speaks LSP over stdio. The
+[VS Code extension](/docs/integrations/vscode) launches it for you, but Neovim,
+IntelliJ, and other editors can drive it too.
+
+Install it on your `PATH`:
+
+```sh
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=chainvet-lsp sh
+```
+
+## What it provides
+
+- **Live diagnostics** — static findings as you open, edit, and save `.sol` files.
+  Severities map **High → Error**, **Medium → Warning**, **Low → Information**.
+- **On-demand hybrid scan** — a `workspace/executeCommand`
+  (`chainvet.hybridScan`) runs the full static + symbolic + fuzzing pipeline on a
+  file, for vulnerabilities the live static pass can't reach.
+- **Structured findings** — a `chainvet/publishFindings` notification carries rows
+  with provenance, confidence, severity, kind, category, message, and range — which
+  a client can render in a dedicated panel.
+
+## Configuration
+
+The server reads the [AI feature](/docs/concepts/ai-features) environment variables
+(`CHAINVET_LLM_REPORT`, `CHAINVET_LLM_FALLBACK_PARSER`, endpoint, model). The VS Code
+extension surfaces these as settings and passes them through when it spawns the
+server.
+
+<Callout title="Editor integration">
+  Most users won't run this binary directly — install the
+  [VS Code extension](/docs/integrations/vscode), which manages the language server
+  and adds a Findings panel. This page is for wiring `chainvet-lsp` into other LSP
+  clients.
+</Callout>

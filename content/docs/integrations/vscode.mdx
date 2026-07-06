@@ -1,0 +1,67 @@
+---
+title: VS Code Extension
+description: Hybrid Solidity security analysis inside VS Code — live diagnostics and an on-demand hybrid scan, powered by the language server.
+icon: Puzzle
+---
+
+The **Chainvet** VS Code extension brings hybrid Solidity analysis into your editor.
+It's a thin language client that launches the [`chainvet-lsp`](/docs/frontends/lsp)
+binary and surfaces its diagnostics plus a dedicated Findings panel.
+
+## Requirements
+
+The analysis runs in the `chainvet-lsp` language server, which the extension
+launches. Install it so it's on your `PATH`:
+
+```sh
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=chainvet-lsp sh
+```
+
+If the binary lives elsewhere, point `chainvet.serverPath` at it. Prebuilt
+`chainvet-lsp` binaries are currently x86_64-Linux only; other platforms
+[build from source](/docs/installation#build-from-source).
+
+## Features
+
+- **Live diagnostics** — static findings as you open, edit, and save `.sol` files,
+  shown as inline squiggles and in the Problems panel.
+- **Full Hybrid Scan on demand** — run symbolic execution + fuzzing on the current
+  file (▶ in the editor title bar, or the Command Palette) to reach vulnerabilities
+  the live static pass can't.
+- **Findings panel** — a dedicated Activity Bar view grouping findings by severity,
+  each tagged with its confidence and the engine that found it; click to jump to the
+  exact location.
+- **Filter by confidence** — show All, or High / Medium / Low only.
+- **Works standalone** — the extension registers the Solidity language itself, so
+  diagnostics work without any other extension.
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `Chainvet: Full Hybrid Scan (Current File)` | Run the full static + symbolic + fuzzing pipeline on the active file. |
+| `Chainvet: Filter by Confidence` | Filter the Findings view: All / High / Medium / Low. |
+| `Chainvet: Clear Findings` | Clear the Findings view and hybrid diagnostics. |
+| `Chainvet: Restart Language Server` | Restart `chainvet-lsp` (e.g. after changing settings). |
+
+## Settings
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| `chainvet.serverPath` | `chainvet-lsp` | Path to the language-server binary. |
+| `chainvet.aiReports.enabled` | `false` | LLM review of findings via a local [Ollama](https://ollama.com) — drops likely false positives and annotates the rest (adds latency). |
+| `chainvet.aiFallbackParser.enabled` | `false` | AI-assisted parsing when solc and tree-sitter both fail. |
+| `chainvet.ai.endpoint` | `http://127.0.0.1:11434` | Ollama endpoint for the AI features. |
+| `chainvet.ai.model` | `qwen2.5-coder:7b` | Ollama model for the AI features. |
+
+The [AI features](/docs/concepts/ai-features) are **off by default** — with them off,
+Chainvet runs fully offline and deterministically. The extension passes these
+settings to the language server as environment variables.
+
+## How it works
+
+The extension launches `chainvet-lsp` over stdio. Diagnostic severities map **High →
+Error**, **Medium → Warning**, **Low → Information**. The hybrid scan is a
+`workspace/executeCommand` the server handles, and the Findings panel is fed by a
+structured `chainvet/publishFindings` notification — so the same capability is
+available to any LSP client (Neovim, IntelliJ, …), not just VS Code.

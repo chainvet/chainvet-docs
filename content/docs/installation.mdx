@@ -1,0 +1,116 @@
+---
+title: Installation
+description: Install the Chainvet binaries on Linux with one command, or build from source with Rust and Z3.
+icon: Download
+---
+
+Chainvet ships four binaries — the `chainvet` CLI plus the optional `chainvet-ci`,
+`chainvet-server`, and `chainvet-lsp` front ends. All of them dynamically link the
+[Z3](https://github.com/Z3Prover/z3) solver library, which the installer provides.
+
+## One-line install (Linux x86_64)
+
+```sh
+curl -fsSL https://install.chainvet.dev/install.sh | sh
+```
+
+On a real terminal this shows an **arrow-key checkbox menu** to pick which
+components to install (**↑/↓** to move, **space** to toggle, **enter** to confirm)
+— the `chainvet` CLI is preselected. Terminals that can't enter raw mode fall back
+to a numbered prompt (force it with `CHAINVET_MENU=basic`).
+
+The installer picks components, installs the **Z3 runtime** via your system package
+manager (apt / dnf / pacman / zypper / apk), downloads each selected binary,
+verifies it against `SHA256SUMS.txt`, and installs it.
+
+### Scripted / non-interactive installs
+
+Piped or non-interactive runs install just the CLI unless `CHAINVET_BINS` says
+otherwise, so automation stays deterministic:
+
+```sh
+# everything, no prompt
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=all sh
+
+# just the CLI + language server
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS="chainvet chainvet-lsp" sh
+```
+
+The installer is configured entirely through environment variables:
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `CHAINVET_BINS` | prompt, else `chainvet` | Components to install: `all`, or a space-separated list of `chainvet` / `chainvet-ci` / `chainvet-server` / `chainvet-lsp` (skips the prompt) |
+| `CHAINVET_VERSION` | `latest` | Release tag to install (e.g. `v0.1.0`) |
+| `CHAINVET_INSTALL_DIR` | `/usr/local/bin`, else `~/.local/bin` | Install prefix |
+| `CHAINVET_MENU` | (arrow-key) | Set to `basic` for the numbered menu |
+| `CHAINVET_NONINTERACTIVE` | (unset) | Set to `1` to never prompt |
+
+<Callout type="info" title="Platform scope">
+  v0.1.0 ships prebuilt binaries for **`x86_64-unknown-linux-gnu`** only. Other
+  architectures and operating systems build from source (below). A Windows
+  PowerShell installer (`irm https://install.chainvet.dev/install.ps1 | iex`) is
+  planned.
+</Callout>
+
+## Build from source
+
+Building requires a **Rust** toolchain and the **Z3** system library.
+
+```sh
+# Debian/Ubuntu:
+sudo apt-get install libz3-dev
+# macOS:
+brew install z3
+
+git clone https://github.com/chainvet/chainvet
+cd chainvet
+```
+
+The CLI is the core tool; the CI, server, and LSP front ends are optional and pull
+extra dependencies. Use `-p` to build only what you want:
+
+```sh
+# CLI only — just the `chainvet` analyzer
+cargo build --release -p chainvet-cli
+
+# CLI plus whichever front ends you want (mix and match)
+cargo build --release -p chainvet-cli -p chainvet-ci       # + SARIF / CI
+cargo build --release -p chainvet-cli -p chainvet-server   # + REST server
+cargo build --release -p chainvet-cli -p chainvet-lsp      # + language server
+
+# everything — all four binaries
+cargo build --release
+```
+
+Each `-p chainvet-<name>` produces `target/release/chainvet-<name>` (the CLI's
+binary is just `chainvet`).
+
+You can also install a single front end straight from Git:
+
+```sh
+cargo install --git https://github.com/chainvet/chainvet chainvet-cli
+```
+
+## Verify the install
+
+```sh
+chainvet --version
+```
+
+If the binary isn't found, make sure the install directory (for example
+`~/.local/bin`) is on your `PATH`.
+
+## Optional: PDF reports
+
+Generating **PDF** audit reports (`chainvet scan -f pdf`) needs an HTML→PDF engine
+on your `PATH` — [`weasyprint`](https://weasyprint.org/) (recommended) or
+`wkhtmltopdf`. Markdown and HTML reports need nothing extra. See
+[Audit reports](/docs/cli/audit-reports).
+
+## Next steps
+
+<Cards>
+  <Card title="Quick Start" href="/docs/quickstart" description="Run your first scan." />
+  <Card title="CLI overview" href="/docs/cli/overview" description="Every command and flag." />
+</Cards>

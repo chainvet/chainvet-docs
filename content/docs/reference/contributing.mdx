@@ -1,0 +1,53 @@
+---
+title: Contributing
+description: Build the workspace, where new code goes, and the conventions that keep Chainvet's front ends consistent.
+icon: GitPullRequest
+---
+
+Chainvet is open source (MIT) on GitHub at
+[chainvet/chainvet](https://github.com/chainvet/chainvet). This page summarizes the
+contributor workflow; see `CONTRIBUTING.md` in the repo for the authoritative version.
+
+## Getting started
+
+Building requires the **Z3** system library and a **Rust** toolchain.
+
+```sh
+# Debian/Ubuntu:
+sudo apt-get install libz3-dev
+
+cargo build              # build the workspace
+cargo test               # run tests
+cargo clippy -- -D warnings
+cargo fmt
+```
+
+## Where things go
+
+Chainvet's [architecture](/docs/concepts/architecture) dictates where new code
+lives:
+
+| You're adding… | It goes in… |
+| --- | --- |
+| A new detector | `crates/chainvet-sa/src/analysis/detectors/` |
+| Symbolic / fuzzing logic | `chainvet-se` / `chainvet-fuzzing` |
+| A new output format or integration | a **front-end** crate that calls `scan()` — never reach into an engine directly |
+| A shared type | `chainvet-core` (keep it I/O-free) |
+
+## Conventions
+
+- **Engine crates are pure.** `chainvet-core`, `-sa`, `-se`, `-fuzzing`, and
+  `-hybrid` do no I/O and don't depend on a web/LSP/async stack. They take typed
+  inputs and return typed results; all rendering and I/O lives in the front ends,
+  which reach the engines only through `chainvet-orchestrator`'s `scan()`.
+- **Keep the hybrid `--json` schema stable.** The `HybridJsonReport` shape is
+  consumed by benchmarks and the CI/SARIF front end — don't change it casually.
+- **Add a fixture + test** for any new detection.
+- Before a PR: `cargo fmt --all`, `cargo clippy --workspace --all-targets`,
+  `cargo test --workspace`. Use focused, conventional commits.
+
+## Reporting issues
+
+For a false positive or false negative, include a **minimal Solidity snippet**, the
+**mode** you ran, and the **expected vs. actual** finding — that's enough to
+reproduce and fix quickly.

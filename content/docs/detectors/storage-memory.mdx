@@ -1,0 +1,25 @@
+---
+title: Storage & Memory
+description: 7 detectors (SM-01…SM-07) for assembly jumps, unsafe memory, msg.value-in-loop, and delegatecall-in-loop.
+icon: Database
+---
+
+Storage-and-memory detectors (`SM`) catch low-level hazards — dangerous inline
+assembly, unsafe memory manipulation, and loops that misuse `msg.value` or
+`delegatecall`. **7 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| SM-01 | `arbitrary-function-jump` | High | High | An assembly jump to an attacker-controllable destination. |
+| SM-02 | `bytes-variables-risk` | Medium | Low | Risky handling of `bytes` / `string` storage variables. |
+| SM-03 | `msg-value-in-loop` | High | High | `msg.value` used inside a loop — the same value is counted on every iteration. |
+| SM-04 | `error-prone-assembly` | Low | Low | Inline assembly that is error-prone and hard to audit. |
+| SM-05 | `memory-manipulation` | High | Low | Unsafe direct memory manipulation in assembly. |
+| SM-06 | `storage-array-by-value` | Medium | Low | A storage array copied by value where a reference was intended. |
+| SM-07 | `delegatecall-in-loop` | High | High | `delegatecall` inside a loop — repeated `msg.value` use and other dangerous effects. |
+
+<Callout title="Remediation">
+  Minimize inline assembly and prefer high-level Solidity; never trust a jump
+  destination or a `msg.value` accumulated across loop iterations; be explicit about
+  storage vs. memory reference semantics.
+</Callout>

@@ -1,0 +1,56 @@
+---
+title: Audit Reports
+description: Generate a branded, Cyfrin-style audit report — Markdown, HTML, or PDF — straight from a scan.
+icon: FileText
+---
+
+The `md`, `html`, and `pdf` formats render a **Cyfrin-style audit report** from a
+scan. The same report generator (`chainvet-report`) is shared by the CLI and the
+[server](/docs/frontends/server), so both emit identical reports.
+
+## Generate one
+
+```sh
+chainvet scan -f md   -o audit.md   contracts/
+chainvet scan -f html -o audit.html contracts/
+chainvet scan -f pdf  -o audit.pdf  contracts/
+```
+
+`md` and `html` may go to stdout or a file; **`pdf` requires `-o`**.
+
+## What's in the report
+
+- **Protocol Summary**
+- **Disclaimer**
+- **Risk Classification** — a table mapping High / Medium / Low, plus an
+  **Informational** row for non-security observations and code-quality notes
+- **Audit Details** — project, target, analysis mode, reportable findings
+- **Scope** and **Executive Summary**
+- **Findings grouped by severity**, each with its **impact**, a
+  **proof-of-concept**, and a **recommended mitigation**
+
+The per-finding impact / PoC / mitigation text comes from a **deterministic,
+curated guidance library** keyed by detector — so reports are reproducible and do
+**not** require the AI features to be enabled.
+
+## HTML and PDF share one look
+
+`html` and `pdf` render the **same branded page** — a dark Catppuccin theme with the
+Chainvet logo and severity colors (High = red, Medium = peach, Low = yellow,
+Informational = sky). The `pdf` format simply pipes that HTML through an HTML→PDF
+engine.
+
+## PDF engine
+
+`-f pdf` needs an HTML→PDF engine on your `PATH`:
+
+- [`weasyprint`](https://weasyprint.org/) — recommended
+- `wkhtmltopdf` — fallback
+
+Override which one is used with `CHAINVET_PDF_ENGINE`.
+
+<Callout title="Dependency-free PDF">
+  Don't want to install a PDF engine? Generate `-f html` and use your browser's
+  **Print → Save as PDF**. The output is identical to `-f pdf` — the HTML is styled
+  to print cleanly with its dark background intact.
+</Callout>

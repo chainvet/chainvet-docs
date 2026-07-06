@@ -1,0 +1,15 @@
+{
+  "title": "Detectors",
+  "icon": "ScanSearch",
+  "pages": [
+    "overview",
+    "access-control",
+    "arithmetic",
+    "block-manipulation",
+    "cryptographic",
+    "denial-of-service",
+    "reentrancy",
+    "storage-memory",
+    "miscellaneous"
+  ]
+}

@@ -1,0 +1,45 @@
+---
+title: Detector Reference
+description: Chainvet's static analysis ships 48 detectors across 8 categories, each with a stable ID, a default confidence, and a severity.
+icon: ScanSearch
+---
+
+Chainvet's static-analysis engine ships **48 detectors** organized into **8
+categories**. Each detector has a stable **ID** (e.g. `AC-01`, `RE-04`), a
+lowercase **slug** (e.g. `arbitrary-transfer-from`), a **severity** (impact), and a
+default **confidence** (precision). The taxonomy — 47 of these detectors — is the
+canonical rule set advertised as "45+ detectors".
+
+## Categories
+
+| Prefix | Category | Detectors | Page |
+| --- | --- | --- | --- |
+| `AC` | Access Control | 18 | [Access Control](/docs/detectors/access-control) |
+| `AR` | Arithmetic | 4 | [Arithmetic](/docs/detectors/arithmetic) |
+| `BM` | Block Manipulation | 3 | [Block Manipulation](/docs/detectors/block-manipulation) |
+| `CR` | Cryptographic | 2 | [Cryptographic](/docs/detectors/cryptographic) |
+| `DS` | Denial of Service | 7 | [Denial of Service](/docs/detectors/denial-of-service) |
+| `RE` | Reentrancy | 5 | [Reentrancy](/docs/detectors/reentrancy) |
+| `SM` | Storage & Memory | 7 | [Storage & Memory](/docs/detectors/storage-memory) |
+| `MI` | Miscellaneous | 2 | [Miscellaneous](/docs/detectors/miscellaneous) |
+
+## How to read a detector
+
+Every finding a detector produces carries two ratings — read them together:
+
+- **Severity** — the potential impact (`high` / `medium` / `low`), fixed by the
+  detector per finding.
+- **Confidence** — the detector's own precision estimate (`high` / `medium` /
+  `low`). A detector raises or lowers it per finding when it has local evidence;
+  otherwise it uses a per-kind default. The values in these tables are that default.
+
+See [Severity & Confidence](/docs/concepts/severity-confidence) for the full model,
+and note that some detectors emit different severities depending on context (for
+example, arithmetic overflow is `medium` in an `unchecked` block but `high` on
+untrusted input in Solidity < 0.8) — such cases are shown as a range.
+
+<Callout title="These run in every mode">
+  The detectors are the static-analysis layer. They run on their own in `-m static`
+  and also participate in `hybrid` mode, where symbolic execution and fuzzing confirm
+  and extend their findings. See [Analysis engines](/docs/concepts/engines).
+</Callout>

@@ -1,0 +1,23 @@
+---
+title: Reentrancy
+description: 5 detectors (RE-01…RE-05) for the classic drain pattern and its cross-function and no-ETH variants.
+icon: Repeat
+---
+
+Reentrancy detectors (`RE`) catch the family of bugs where an external call
+re-enters the contract before its state is updated — from the classic ETH-drain to
+cross-function and no-ETH variants. **5 detectors**.
+
+| ID | Slug | Severity | Confidence | What it detects |
+| --- | --- | --- | --- | --- |
+| RE-01 | `reentrancy-negative-events` | High | Low | Reentrancy where events are emitted after the external call — misleading logs and state. |
+| RE-02 | `reentrancy-transfer` | Medium–High | Medium | Reentrancy affecting a token-transfer path. |
+| RE-03 | `reentrancy-same-effect` | Medium–High | Low | Reentrancy that re-triggers the same state effect. |
+| RE-04 | `reentrancy-eth-transfer` | High | Medium | The classic drain: an external ETH-sending call before the state update. |
+| RE-05 | `reentrancy-no-eth-transfer` | Medium | Low | Reentrancy on a path with no ETH transfer (cross-function / cross-contract state). |
+
+<Callout title="Remediation">
+  Follow the **checks-effects-interactions** pattern: update state before making any
+  external call. Add a `nonReentrant` guard (e.g. OpenZeppelin's `ReentrancyGuard`)
+  for defense in depth. RE-04 is the pattern behind the DAO hack.
+</Callout>

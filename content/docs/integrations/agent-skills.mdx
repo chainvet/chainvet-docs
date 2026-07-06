@@ -1,0 +1,57 @@
+---
+title: Agent Skills
+description: Portable Agent Skills that let any skills-compatible AI agent drive Chainvet from a shell.
+icon: Bot
+---
+
+**Chainvet Agent Skills** are portable [Agent Skills](https://agentskills.io) that
+let any skills-compatible AI agent (Claude Code, Cursor, Codex, Gemini CLI, …) drive
+Chainvet. Each skill is a self-contained directory with a `SKILL.md`; an agent loads
+a skill's name and description at startup and pulls in the full instructions only
+when a task matches.
+
+## The three skills
+
+| Skill | Tool | Use it when… |
+| --- | --- | --- |
+| `chainvet-scan` | the `chainvet` CLI | Auditing/scanning a `.sol` file or contracts directory, or generating a Cyfrin-style audit report (md/html/pdf). |
+| `chainvet-ci` | the `chainvet-ci` binary | Producing SARIF and gating a pipeline (GitLab, Jenkins, pre-commit, any non-GitHub CI) on findings by severity/confidence. |
+| `chainvet-github-action` | `chainvet/chainvet-action` | Adding Chainvet to GitHub Actions and uploading SARIF to the Security → Code scanning tab. |
+
+The interactive front ends (`chainvet-server`, `chainvet-lsp`, and the VS Code / Web
+UIs) are intentionally **not** packaged as skills — they're GUI/editor tools an agent
+doesn't drive from a shell.
+
+## Install Chainvet once
+
+All three skills use the same binaries. On Linux x86_64:
+
+```sh
+curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=all sh
+```
+
+Or per-tool with `CHAINVET_BINS=chainvet` / `chainvet-ci`, or from source with
+`cargo install --git https://github.com/chainvet/chainvet <crate>` (needs the Z3
+system library). Each `SKILL.md` also embeds its own install step.
+
+## Layout
+
+```
+chainvet-skills/
+├── chainvet-scan/
+│   ├── SKILL.md
+│   └── references/cli-reference.md
+├── chainvet-ci/
+│   └── SKILL.md
+└── chainvet-github-action/
+    ├── SKILL.md
+    └── assets/chainvet.yml
+```
+
+<Callout title="Which skill when">
+  `chainvet-scan` for local, interactive auditing; `chainvet-ci` for any non-GitHub
+  pipeline or a pre-commit gate; `chainvet-github-action` for GitHub Actions
+  specifically. The skills mirror the [CLI](/docs/cli/overview),
+  [CI](/docs/frontends/ci), and [GitHub Action](/docs/integrations/github-action)
+  docs.
+</Callout>

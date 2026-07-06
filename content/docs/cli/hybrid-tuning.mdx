@@ -1,0 +1,51 @@
+---
+title: Hybrid Tuning
+description: Shape the time and depth budget of fuzzing, symbolic, and hybrid runs — and make fuzzing reproducible.
+icon: SlidersHorizontal
+---
+
+The hybrid, fuzzing, and symbolic modes spend a budget of time and iterations. These
+flags shape that budget. They have no effect on a pure `static` run.
+
+## Flags
+
+| Flag | Value | Meaning |
+| --- | --- | --- |
+| `--epochs` | N | Max fuzz epochs. |
+| `--fuzz-time-ms` | MS | Total fuzz time budget. |
+| `--hard-cap-ms` | MS | Overall wall-clock cap for the whole run. |
+| `--fuzz-iters` | N | Fuzz iterations per epoch. |
+| `--epoch-time-ms` | MS | Per-epoch fuzz time. |
+| `--se-timeout-ms` | MS | Symbolic execution timeout. |
+| `--se-depth` | N | Symbolic execution max path depth. |
+| `--se-assists` | N | Max on-stall symbolic assists (hybrid). |
+| `--seed` | N | Fuzz seed, for reproducible runs. |
+
+## Faster vs. deeper
+
+Lower the time and cap values for a **faster, shallower** scan; raise them for a
+**more thorough** one.
+
+```sh
+# quick pass — tight caps
+chainvet scan --fuzz-time-ms 2000 --hard-cap-ms 5000 contracts/
+
+# deep audit — generous budget
+chainvet scan --epochs 200 --fuzz-time-ms 60000 --se-depth 128 contracts/
+```
+
+## Reproducible fuzzing
+
+Fuzzing is randomized. Set `--seed` to make a run deterministic — the same seed and
+inputs produce the same output, which is essential for regression tests and for
+comparing before/after a fix.
+
+```sh
+chainvet scan --seed 42 contracts/
+```
+
+<Callout title="How assists work">
+  In [hybrid mode](/docs/concepts/engines), when the fuzzer's coverage stalls the
+  loop calls on symbolic execution to get past the wall. `--se-assists` caps how
+  many of those on-stall assists a run may use.
+</Callout>
