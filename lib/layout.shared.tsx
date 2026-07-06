@@ -15,8 +15,8 @@ export function baseOptions(): BaseLayoutProps {
       },
       {
         text: 'Install',
-        url: 'https://install.chainvet.dev',
-        active: 'none',
+        url: '/docs/installation',
+        active: 'url',
       },
     ],
     githubUrl: orgRepoUrl,
