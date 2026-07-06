@@ -22,9 +22,29 @@ The interactive front ends (`chainvet-server`, `chainvet-lsp`, and the VS Code /
 UIs) are intentionally **not** packaged as skills — they're GUI/editor tools an agent
 doesn't drive from a shell.
 
+## Add a skill to your agent
+
+Install a skill into your project with the [`skills`](https://agentskills.io) CLI:
+
+```sh
+npx skills add chainvet/chainvet-skills --skill chainvet-scan
+```
+
+Swap `--skill` for whichever you need:
+
+```sh
+npx skills add chainvet/chainvet-skills --skill chainvet-scan
+npx skills add chainvet/chainvet-skills --skill chainvet-ci
+npx skills add chainvet/chainvet-skills --skill chainvet-github-action
+```
+
+Your agent then loads the skill's name and description, and pulls in the full
+instructions only when a task matches.
+
 ## Install Chainvet once
 
-All three skills use the same binaries. On Linux x86_64:
+The skills drive the Chainvet binaries, so install those too. All three use the
+same binaries. On Linux x86_64:
 
 ```sh
 curl -fsSL https://install.chainvet.dev/install.sh | CHAINVET_BINS=all sh

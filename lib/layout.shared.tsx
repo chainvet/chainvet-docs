@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { orgRepoUrl } from './shared';
 import { ChainvetLogo } from '@/components/logo';
 
 export function baseOptions(): BaseLayoutProps {
@@ -14,6 +13,7 @@ export function baseOptions(): BaseLayoutProps {
         active: 'url',
       },
     ],
-    githubUrl: orgRepoUrl,
+    // The GitHub link is rendered as a labeled repo link in the sidebar footer
+    // (see app/(docs)/layout.tsx) rather than a bare icon.
   };
 }
